@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>ToDoList</title>
+	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="css/reset.css">
 	
 	<style type="text/css">
@@ -119,14 +120,14 @@
 
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script type="text/javascript">
-    const STORAGE_TODO_KEY = 'list-todos'
-    const STORAGE_DONE_KEY = 'list-dones'
 	var app = new Vue({
 		  el: '#app',
 		  data: {
 		    todos: ['ff', 'gg'],
 		    dones: ['hh', 'vv'],
-		    newItem: ''
+		    newItem: '',
+		    STORAGE_TODO_KEY: 'list-todos',
+            STORAGE_DONE_KEY: 'list-dones'
 		  },
 		  methods : {
 		    addTodo () {
@@ -138,7 +139,7 @@
 		      this.newItem = ''
 		    },
 		    finish (index) {
-		      let todo = this.todos.splice(index, 1)
+		      var todo = this.todos.splice(index, 1)
 		      this.dones.push(...todo)
 		      return false
 		    },
@@ -151,17 +152,17 @@
 		  	
 		  },
 		   created: function (val) {
-		    let strTodo = window.localStorage.getItem(STORAGE_TODO_KEY)
-		    let strDone = window.localStorage.getItem(STORAGE_DONE_KEY)
+		    var strTodo = window.localStorage.getItem(this.$data.STORAGE_TODO_KEY)
+		    var strDone = window.localStorage.getItem(this.$data.STORAGE_DONE_KEY)
 		    this.$data.todos = strTodo == null ? [] : JSON.parse(strTodo)
             this.$data.dones = strDone == null ? [] : JSON.parse(strDone)
 		  },
 		  watch: {
 		    todos: function (todos) {
-		      window.localStorage.setItem(STORAGE_TODO_KEY, JSON.stringify(todos))
+		      window.localStorage.setItem(this.$data.STORAGE_TODO_KEY, JSON.stringify(todos))
 		    },
 		    dones: function (dones) {
-		      window.localStorage.setItem(STORAGE_DONE_KEY, JSON.stringify(dones))
+		      window.localStorage.setItem(this.$data.STORAGE_DONE_KEY, JSON.stringify(dones))
 		    }
 		  },
 		  computed : {
