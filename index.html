@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ToDoList</title>
+	<link rel="stylesheet" type="text/css" href="css/reset.css">
+	
+	<style type="text/css">
+		body{
+          background-color: #CDCDCD;
+		}
+		#app {
+		  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+		  margin: 0;
+
+		}
+
+		.header{
+		  height: 60px;
+		  width: 100%;
+		  background-color: #323232;
+
+		}
+		.hd_content{
+		  width: 85%;
+		  margin: 0 auto;
+		}
+		.hd_input{
+		  width: 30%;
+		  margin-left: 40%;
+		  border-radius: 10px;
+
+		}
+		.hd_title{
+		  line-height: 60px;
+		  margin-left: 0;
+		  color: #DDDDDD;
+		}
+		.home{
+		  width: 85%; 
+		  margin: 0 auto;
+		}
+		.hm_title{
+		  margin: 10px 0;  
+		  font-size: 21px;
+		  font-weight: bold;
+		}
+		.hm_list{
+		 
+		}
+		.hd_item{
+		  position: relative;
+		  height: 32px;
+		  line-height: 32px;
+		  margin-bottom: 13px;
+		  padding: 0 45px;
+		  border-left: 3px solid rgba(0,0,0,0.6);
+		  font-size: 16px;
+		  background-color: #fff;
+
+		}
+		.hd_ckbox{
+		  position: absolute;
+		  top: 2px;
+		  left: 10px;
+		  width: 22px;
+		  height: 22px;
+		  cursor: pointer;
+		}
+		.item_finished{
+		  background-color:#E6E6E6;
+		}
+		.item_delete{
+		  position: absolute;
+		  right: 5px;
+		  top: 4px;
+		  display: inline-block;
+		  width: 16px;
+		  height: 14px;
+		  border: 6px double #fff;
+		  border-radius: 14px;
+		  text-align:center;
+		  font-weight: bold;
+		  color: #fff;
+		  font-size: 16px;
+		  line-height: 16px;
+		  background-color: #CDCDCD;
+		  cursor: pointer;
+		}
+
+	</style>
+</head>
+<body>
+  <div id="app">
+    <div class="header">
+      <div class="hd_content">
+        <span class="hd_title">ToDoList</span>
+        <input type="text" class="hd_input" placeholder="ADD TODOS" v-model="newItem" v-on:keyup.enter="addTodo" >
+      </div>
+    </div>
+    <div class="home">
+      <p class="hm_title">正在进行</p>
+      <ul class="hm_list">
+        <li v-for="(todo, index) in todos" class="hd_item">
+           <input type="checkbox" class="hd_ckbox" v-on:click.prevent="finish(index)" />
+           <span>{{ todo}}</span>
+           <span class="item_delete" v-on:click="deleteTodo(index)">-</span>
+        </li>
+      </ul>
+      <p class="hm_title">已经完成</p>
+      <ul class="hm_list">
+        <li v-for="(done, index) in dones" class="hd_item item_finished">
+           <input type="checkbox" class="hd_ckbox"/>
+           <span>{{ done }}</span>
+           <span class="item_delete" v-on:click="deleteDone(index)">-</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script type="text/javascript">
+    const STORAGE_TODO_KEY = 'list-todos'
+    const STORAGE_DONE_KEY = 'list-dones'
+	var app = new Vue({
+		  el: '#app',
+		  data: {
+		    todos: ['ff', 'gg'],
+		    dones: ['hh', 'vv'],
+		    newItem: ''
+		  },
+		  methods : {
+		    addTodo () {
+		      if (this.newItem === '') {
+		        alert('Please write something!')
+		        return true
+		      }
+		      this.todos.push(this.newItem)
+		      this.newItem = ''
+		    },
+		    finish (index) {
+		      let todo = this.todos.splice(index, 1)
+		      this.dones.push(...todo)
+		      return false
+		    },
+		    deleteTodo (index) {
+		      this.todos.splice(index, 1)
+		    },
+		    deleteDone (index) {
+		      this.dones.splice(index, 1)
+		    }
+		  	
+		  },
+		   created: function (val) {
+		    let strTodo = window.localStorage.getItem(STORAGE_TODO_KEY)
+		    let strDone = window.localStorage.getItem(STORAGE_DONE_KEY)
+		    this.$data.todos = strTodo == null ? [] : JSON.parse(strTodo)
+            this.$data.dones = strDone == null ? [] : JSON.parse(strDone)
+		  },
+		  watch: {
+		    todos: function (todos) {
+		      window.localStorage.setItem(STORAGE_TODO_KEY, JSON.stringify(todos))
+		    },
+		    dones: function (dones) {
+		      window.localStorage.setItem(STORAGE_DONE_KEY, JSON.stringify(dones))
+		    }
+		  },
+		  computed : {
+		  	
+		  }
+		});
+</script>
+</body>
+</html>
